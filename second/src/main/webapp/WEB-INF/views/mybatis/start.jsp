@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>나의 회원관리 프로그램</h1>
+<h1>나의 회원관리 프로그램(배포)</h1>
 <h3>
 	<ul>
 		<li><a href="login">로그인</a></li><!-- httpSession 브라우저 정보 지속 -->
