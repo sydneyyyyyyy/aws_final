@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MyWebConfig implements WebMvcConfigurer {
 	
 	//linux
-	static final public String savePath = "usr/upload";
+	static final public String savePath = "/usr/upload";
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
