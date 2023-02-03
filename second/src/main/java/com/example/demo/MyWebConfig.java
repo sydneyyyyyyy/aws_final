@@ -16,7 +16,7 @@ public class MyWebConfig implements WebMvcConfigurer {
 		//registry.addResourceHandler("/upload/**").addResourceLocations("file:///c:/upload/");
 		
 		//배포 위한 path 수정
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:/uwr/upload");
+		registry.addResourceHandler("/upload/**").addResourceLocations("file:/usr/upload");
 		//registry.addResourceHandler("mapping url 이름").addResourceLocations("경로");
 		
 	}
