@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 자동연결 위해 <mapper namespace="@Mapper 인터페이스명">   -->
+ <mapper namespace="spring.mybatis.MemberDAO"> 
+
+ <!-- member 테이블 컬럼명 === MemberDTO 클래스 변수명 저장 -->
+ <select id="memberlist" resultType="memberdto">
+ 	select * from member
+ </select>
+ 
+ <select id="membercount" resultType="int">
+  select count(*) from member
+ </select>
+
+<select id="onemember" resultType="memberdto" parameterType="String">
+	select * from member where id=#{a}
+</select>
+
+<select id="paginglist" resultType="memberdto" parameterType="int[]">
+select * from member order by indate desc limit
+<foreach collection="array" item="num" separator=",">
+#{num}
+</foreach>
+</select>
+
+<insert id="insertmember" parameterType="memberdto">
+insert into member values(#{id}, #{pw}, #{name}, #{phone}, #{email}, #{address}, now(),#{image})
+</insert>
+
+<!-- main test용 -->
+<update id="updatemember" parameterType="memberdto">
+<!-- dto가 parameter로 전달될때 변수이름은 dto와 똑같이, 그렇지 않다면 원하는대로 -->
+update member set name =#{name}, email=#{email}, phone=#{phone} where id=#{id}
+</update>
+
+<update id="updatemember2" parameterType="memberdto">
+update member set name =#{name}, email=#{email}, phone=#{phone}, address=#{address},pw=#{pw} where id=#{id}
+</update>
+
+<delete id="deletemember" parameterType="String">
+delete from member where id=#{a}
+</delete>
+
+<!-- session.selectList("searchmember",map);  -->
+<select id="searchmember" resultType="memberdto" parameterType="hashmap">
+select * from member where ${colname} like #{colvalue}
+<!-- 
+select * from member where indate like '%2023%'
+select * from member where phone like '%1234%'
+ -->
+</select>
+<!-- session.selectList ("addressSearch",addressList); -->
+<select id="addressSearch" resultType="memberdto">
+select * from member where address in
+	<foreach open="(" close=")" separator="," collection="list" item="addr">
+	#{addr}
+	</foreach>
+</select>
+
+<!-- 여러번 사용할 수 있는 sql 조각 -->
+<sql id="a">
+select * from member
+</sql>
+
+<select id="combination" resultType="memberdto"  parameterType="memberdto">
+	<include refid="a"/><!--select * from member 이 부분이 들어감  -->
+	<where>
+		<choose>
+			<!-- 대상에 따라 동적으로 바뀌는 where 절 -->
+			<when test="name != null and name != '' and email !=null and email !=''">
+				name =#{name} and email=#{email}
+			</when>
+			<when test="name != null and name != ''">
+				name =#{name}
+			</when>
+			<when test="email !=null and email !=''">
+				email=#{email}
+			</when>
+		</choose>
+	
+	</where>
+</select>
+
+<!-- 
+2개 이상의 테이블이 join 되었을때,
+select a.id, b.title, b.age
+from a join b on a.id= b.name
+
+select concat(id, ':', name)as id_name from member
+ -->
+<resultMap type="HashMap" id="dtoMap">
+	<!--<result property="id" column="name"/> memberdto.setId(name 컬럼값) -->
+	<!-- property는 key -->
+	<result property="id" column="a.id"/>
+	<result property="title" column="b.title"/>
+	<result property="age" column="b.age"/>
+</resultMap>
+<select id="test" resultMap="dtoMap">
+select a.id, b.title, b.age
+from a join b on a.id= b.name
+</select>
+<!-- 
+HashMap map = session.selectOne("test");
+map.get("id")
+
+List<HashMap<String, String>> list = session.selectList("test");
+ -->
+ 
+<resultMap type="HashMap" id="memberBoardMap">
+	<result property="id" column="id"/>
+	<result property="name" column="name"/>
+	<result property="title" column="title"/>
+	<result property="time" column="time"/>
+</resultMap>
+<select id="memberBoard" resultMap="memberBoardMap" parameterType="String">
+SELECT id, NAME, ifnull(title,'글없음') AS title,IFNULL(writingtime,'작성시간없음') AS time
+FROM member m LEFT OUTER JOIN board b ON m.id = b.writer
+WHERE id=#{id}
+</select>
+ 
+ 
+ 
+
+
+
+ </mapper>
