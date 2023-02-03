@@ -1,3 +1,4 @@
+<%@page import="com.example.demo.MyWebConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -12,6 +13,6 @@
 <h5> 설명 : ${dto.description }</h5>
 <h5> 업로드 파일명1 : ${dto.file1.originalFilename }</h5>
 <h5> 업로드 파일명2 : ${dto.file2.originalFilename }</h5>
-<h3> c:/upload 폴더에 저장했습니다.</h3>
+<h3> 서버 <%=MyWebConfig.savePath %>폴더에 저장했습니다.</h3>
 </body>
 </html>
